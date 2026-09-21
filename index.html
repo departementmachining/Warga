@@ -130,7 +130,7 @@
 
         <!-- KEPENDUDUKAN -->
         <div x-show="activeTab === 'kependudukan'" class="space-y-4">
-          <input type="text" x-model="searchWarga" placeholder="Cari nama, NIK, atau blok..." class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs w-full sm:w-72">
+          <input type="text" x-model="searchWarga" placeholder="Cari nama atau blok..." class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs w-full sm:w-72">
           <div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-sm">
             <table class="w-full text-left border-collapse text-xs">
               <thead>
@@ -271,10 +271,7 @@
           <div class="rounded-xl border border-slate-100 divide-y divide-slate-100">
             <template x-for="a in anggotaKK(detailKK)" :key="a.id">
               <div class="px-3 py-2.5 flex items-center justify-between gap-3 text-xs">
-                <div class="min-w-0">
-                  <p class="font-semibold text-slate-800 truncate" x-text="a.nama"></p>
-                  <p class="text-slate-500 mt-0.5" x-text="'NIK: ' + (a.nik || 'Belum diisi')"></p>
-                </div>
+                <p class="font-semibold text-slate-800 truncate min-w-0" x-text="a.nama"></p>
                 <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold shrink-0" :class="a.hubungan === 'Kepala Keluarga' ? 'bg-emerald-100 text-emerald-700' : (a.hubungan.startsWith('Istri') ? 'bg-pink-100 text-pink-700' : 'bg-sky-100 text-sky-700')" x-text="a.hubungan"></span>
               </div>
             </template>
@@ -366,7 +363,6 @@
           if (!q) return kepalaList;
           return kepalaList.filter(k => this.anggotaKK(k.kk).some(w =>
             (w.nama || '').toLowerCase().includes(q) ||
-            (w.nik || '').includes(q) ||
             (w.blok || '').toLowerCase().includes(q) ||
             (w.noRumah || '').toLowerCase().includes(q)
           ));
