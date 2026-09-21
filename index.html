@@ -53,12 +53,6 @@
         </button>
       </nav>
 
-      <div class="p-4 border-t border-slate-800">
-        <a href="admin.html" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
-          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-          <span>Ke Admin Panel</span>
-        </a>
-      </div>
     </aside>
 
     <!-- Main Content -->
@@ -136,17 +130,15 @@
 
         <!-- KEPENDUDUKAN -->
         <div x-show="activeTab === 'kependudukan'" class="space-y-4">
-          <input type="text" x-model="searchWarga" placeholder="Cari nama, NIK, KK, atau blok..." class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs w-full sm:w-72">
+          <input type="text" x-model="searchWarga" placeholder="Cari nama, NIK, atau blok..." class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs w-full sm:w-72">
           <div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-sm">
             <table class="w-full text-left border-collapse text-xs">
               <thead>
                 <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase">
                   <th class="p-3">Kepala Keluarga</th>
-                  <th class="p-3">No. KK</th>
                   <th class="p-3">Blok / No. Rumah</th>
                   <th class="p-3">Status Rumah</th>
                   <th class="p-3 text-center">Anggota</th>
-                  <th class="p-3 text-center">Iuran Bulan Ini</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
@@ -155,18 +147,14 @@
                     <td class="p-3">
                       <button @click="bukaDetail(w)" class="font-semibold text-emerald-700 hover:text-emerald-900 hover:underline text-left" title="Klik untuk lihat anggota keluarga" x-text="w.nama"></button>
                     </td>
-                    <td class="p-3 text-slate-600" x-text="w.kk"></td>
                     <td class="p-3 text-slate-600" x-text="rumahLabel(w)"></td>
                     <td class="p-3">
                       <span class="px-2 py-1 rounded-full text-[10px] font-semibold" :class="statusRumahOf(w) === 'Pribadi' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'" x-text="statusRumahOf(w)"></span>
                     </td>
                     <td class="p-3 text-center"><span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md font-semibold" x-text="anggotaKK(w.kk).length + ' orang'"></span></td>
-                    <td class="p-3 text-center">
-                      <span class="px-2 py-1 rounded-full text-[10px] font-semibold" :class="w.iuran === 'Lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'" x-text="w.iuran"></span>
-                    </td>
                   </tr>
                 </template>
-                <tr x-show="filteredKepala.length === 0"><td colspan="6" class="p-6 text-center text-slate-400">Belum ada data warga.</td></tr>
+                <tr x-show="filteredKepala.length === 0"><td colspan="4" class="p-6 text-center text-slate-400">Belum ada data warga.</td></tr>
               </tbody>
             </table>
           </div>
@@ -274,9 +262,8 @@
 
       <div class="overflow-y-auto flex-1 p-5 space-y-5" x-show="detailKepala">
         <div class="grid grid-cols-2 gap-3 text-xs">
-          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-[10px] text-slate-400 font-semibold uppercase">No. KK</p><p class="font-semibold text-slate-800 mt-0.5 break-all" x-text="detailKepala ? detailKepala.kk : ''"></p></div>
           <div class="p-3 bg-slate-50 rounded-xl"><p class="text-[10px] text-slate-400 font-semibold uppercase">Blok / No. Rumah</p><p class="font-semibold text-slate-800 mt-0.5" x-text="detailKepala ? rumahLabel(detailKepala) : ''"></p></div>
-          <div class="p-3 bg-slate-50 rounded-xl col-span-2"><p class="text-[10px] text-slate-400 font-semibold uppercase">Status Rumah</p><p class="font-semibold text-slate-800 mt-0.5" x-text="detailKepala ? (statusRumahOf(detailKepala) === 'Pribadi' ? 'Rumah Pribadi' : 'Ngontrak') : ''"></p></div>
+          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-[10px] text-slate-400 font-semibold uppercase">Status Rumah</p><p class="font-semibold text-slate-800 mt-0.5" x-text="detailKepala ? (statusRumahOf(detailKepala) === 'Pribadi' ? 'Rumah Pribadi' : 'Ngontrak') : ''"></p></div>
         </div>
 
         <div>
@@ -351,7 +338,7 @@
           { id: 2, nama: 'Kursi Plastik', jumlah: 50, kondisi: 'Baik' }
         ],
         koordinatorList: JSON.parse(localStorage.getItem('rt_koordinator')) || [
-          { id: 1, nama: 'Budi Santoso', blok: ['A'], wargaIds: [] }
+          { id: 1, nama: 'Budi Santoso', blok: ['A'], wargaKK: ['3171012304850099'], modelBaru: true }
         ],
         koordAktif: null,
         detailKK: null,
@@ -380,7 +367,6 @@
           return kepalaList.filter(k => this.anggotaKK(k.kk).some(w =>
             (w.nama || '').toLowerCase().includes(q) ||
             (w.nik || '').includes(q) ||
-            (w.kk || '').includes(q) ||
             (w.blok || '').toLowerCase().includes(q) ||
             (w.noRumah || '').toLowerCase().includes(q)
           ));
@@ -395,10 +381,15 @@
         statusRumahOf(w) { return w.statusRumah || 'Pribadi'; },
         bukaDetail(w) { this.detailKK = w.kk; this.$nextTick(() => lucide.createIcons()); },
         inisial(nama) { return (nama || '?').trim().split(/\s+/).slice(0, 2).map(x => x[0]).join('').toUpperCase(); },
-        // Warga koordinator = warga di blok yang dipegang + warga tambahan manual (tanpa duplikat)
+        // Warga koordinator = seluruh anggota keluarga yang dipilih admin (per No. KK).
+        // Data lama (belum dimigrasi): blok = semua warga blok itu, dan wargaIds per orang.
         wargaByKoord(k) {
-          const ids = new Set(k.wargaIds || []);
-          return this.wargaList.filter(w => k.blok.includes((w.blok || '').trim().toUpperCase()) || ids.has(w.id));
+          const kkSet = new Set(k.wargaKK || []);
+          (k.wargaIds || []).forEach(id => { const w = this.wargaList.find(x => x.id === id); if (w) kkSet.add(w.kk); });
+          if (!k.modelBaru) {
+            this.wargaList.forEach(w => { if ((k.blok || []).includes((w.blok || '').trim().toUpperCase())) kkSet.add(w.kk); });
+          }
+          return this.wargaList.filter(w => kkSet.has(w.kk));
         },
         bukaKoordinator(k) { this.koordAktif = k; this.$nextTick(() => lucide.createIcons()); },
         rumahLabel(w) { return (!w.blok && !w.noRumah) ? '-' : 'Blok ' + (w.blok || '-') + ' / No. ' + (w.noRumah || '-'); },
